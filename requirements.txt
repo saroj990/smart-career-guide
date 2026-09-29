@@ -1,0 +1,5 @@
+# Day 1 — we only need these to start. More packages get added on later days.
+pandas>=2.0
+jupyter>=1.0
+matplotlib>=3.7
+seaborn>=0.13

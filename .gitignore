@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.env
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Models & large outputs (keep folder via .gitkeep)
+models/*
+!models/.gitkeep
+outputs/*
+!outputs/.gitkeep
+
+# OS / IDE
+.DS_Store
+.idea/
+.vscode/
+.ignore
+AI_Career_Guidance_15_Day_Learning_by_Doing_Plan.md
