@@ -1,5 +1,5 @@
 """
-Day 2 cleaning helpers — same logic as notebooks/day02_eda_cleaning.ipynb.
+Day 2 cleaning helpers — same logic as notebooks/day02/day02_eda_cleaning.ipynb.
 
 Import from notebooks:  from src.cleaning import clean_career_dataset, cleaning_audit
 (Or add project root to sys.path when running scripts.)
