@@ -1,0 +1,22 @@
+---
+description: When implementing a day notebook, mirror reusable logic in src/
+globs: notebooks/day**/*
+alwaysApply: false
+---
+
+# Day notebook ↔ `src/` sync
+
+When you **add or substantially implement** code for a day under `notebooks/dayXX/`:
+
+1. **Extract reusable logic into `src/`** — not only cells in the `.ipynb`. Pure functions, pipelines, metrics, and helpers that could be imported by later days, `app.py`, or scripts belong in Python modules under `src/`.
+2. **One module per concern** — prefer a focused file (e.g. `src/cleaning.py` for Day 2) over dumping everything into a single file. Name modules by behavior, not only by day number.
+3. **Match the existing `src/cleaning.py` pattern**:
+   - Module docstring: which day/notebook it mirrors and how to import.
+   - Type hints and small, testable functions.
+   - Notebook keeps narrative, plots, and `find_project_root()` path setup; it **imports** from `src` where possible (add project root to `sys.path` in the notebook if needed, same as other days).
+4. **Do not skip `src/` for “notebook-only” days** — if the day introduces new logic beyond a one-off demo, create or extend the appropriate `src/` module in the same change.
+5. **Keep paths consistent** — project layout uses lowercase `src/` (see root `README.md`). Saved artifacts stay under `models/` and `outputs/`, not inside `src/`.
+
+## Example
+
+Day 2 notebook implements cleaning → also maintain `src/cleaning.py` with `cleaning_audit`, `clean_career_dataset`, and shared constants (`RATING_COLS`, etc.), and wire the notebook to import them.
