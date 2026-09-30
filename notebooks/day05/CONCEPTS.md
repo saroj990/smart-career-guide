@@ -173,6 +173,47 @@ So you know the pipeline works and have a number to improve on.
 **Why not only accuracy?**  
 Imbalanced careers → high accuracy can hide failure on rare classes.
 
+### Macro vs weighted F1 (read your classification report)
+
+| Average | What it emphasizes |
+|---------|-------------------|
+| **Macro** | Each career counts equally — highlights weak performance on **rare** classes |
+| **Weighted** | Bigger careers pull the average more — closer to “overall” behavior |
+
+Report **both** with accuracy so examiners see you understand imbalance.
+
+### Train accuracy vs test accuracy
+
+| Gap | Likely meaning |
+|-----|----------------|
+| Train much higher than test | Overfitting or too little data |
+| Both low | Features may be weak, or classes are hard to separate |
+| Both similar and modest | Honest baseline — improve with Day 6+ models |
+
+Day 5: quote **test** metrics in your report; train scores are optional diagnostics only.
+
+### End-to-end flow (notebook + `src/`)
+
+```text
+load_cleaned_table()
+    → prepare_train_test_bundle()     # Day 3 — same random_state=42
+    → fit_baseline(X_train, y_train)  # Day 5 — src/classification.py
+    → evaluate_multiclass(..., test)  # metrics + confusion matrix
+    → save_baseline_run()             # outputs/ + models/
+```
+
+The **preprocessor** stays separate from the **classifier**: preprocessing is fit on train in Day 3; the classifier is fit on `X_train` only in Day 5.
+
+### Reading the confusion matrix heatmap
+
+- **Bright cells on the diagonal** → correct top-1 predictions for that career pair.
+- **Bright off-diagonal** → systematic mix-ups (e.g. two similar IT roles).
+- Many careers → the plot is dense; in your write-up, call out **2–3** worst confusions with counts.
+
+### `predict_proba` for one student
+
+After `fit`, each test row gets a vector of probabilities. The **argmax** matches `predict()`; the full vector is what Day 10 uses to rank top-N careers.
+
 ---
 
 ## Goal
