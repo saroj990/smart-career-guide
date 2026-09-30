@@ -84,6 +84,69 @@ scikit-learn `classification_report` gives precision, recall, F1 **per class** a
 
 Used on Day 10 for **ranking** careers, not only top-1.
 
+### Inputs must match Day 3 exactly
+
+| Step | What goes wrong if skipped |
+|------|---------------------------|
+| Same engineered columns | Model sees different features than trained preprocessor expects |
+| `transform` test with **fitted** scaler/encoder | Leakage or wrong scale |
+| Same `random_state` on split | Metrics not comparable across experiments |
+
+**Rule:** Day 5 trains on `X_train`, `y_train` from `prepare_train_test_bundle()` — do not rebuild preprocessing with a different recipe.
+
+### Regularization (why logistic regression is a sane baseline)
+
+Logistic regression penalizes **very large weights** (L2 by default in sklearn). That tends to:
+
+- Reduce wild swings from noisy features
+- Improve generalization on **test** data vs an unregularized linear model
+
+You do not need the full math for Day 5 — remember: **simple + regularized** = strong baseline on tabular data.
+
+### Imbalanced classes (connect to Day 2)
+
+If one career has 40% of rows and another has 2%:
+
+| Scenario | What happens |
+|----------|----------------|
+| Model always predicts the **majority** career | Accuracy can look **high** |
+| Rare careers | Low **recall** — you “miss” those students |
+
+Use **per-class** precision/recall/F1 and the confusion matrix, not accuracy alone.
+
+### One-vs-rest vs multinomial (sklearn detail)
+
+For multi-class logistic regression, sklearn can:
+
+| Mode | Idea |
+|------|------|
+| **multinomial** | One joint model over all careers (common default for `LogisticRegression`) |
+| **ovr** (one-vs-rest) | One binary model per career vs all others |
+
+Both output `predict` and `predict_proba`. For your report, note which you used (`multi_class` / `solver` in sklearn).
+
+### sklearn pattern for Day 5
+
+```python
+from sklearn.linear_model import LogisticRegression
+
+clf = LogisticRegression(max_iter=1000, random_state=42)
+clf.fit(X_train, y_train)
+y_pred = clf.predict(X_test)
+y_proba = clf.predict_proba(X_test)
+```
+
+Evaluate only on **held-out** `X_test`, `y_test`.
+
+### Common Day 5 mistakes
+
+| Mistake | Fix |
+|---------|-----|
+| Training on full data, reporting train accuracy | Report **test** metrics |
+| Forgetting `stratify=y` when re-splitting | Use Day 3 split or same `random_state` |
+| Tuning on test set | Test is **once**; use validation/CV for tuning (Day 7 preview) |
+| Comparing to Day 4 clusters as if they were predictions | Cluster ID ≠ career label |
+
 ### What to save today
 
 | Artifact | Path idea |

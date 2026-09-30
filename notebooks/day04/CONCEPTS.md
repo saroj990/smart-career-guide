@@ -87,6 +87,69 @@ It does **not** replace predicting `Career` — that is **supervised** from Day 
 | Treating cluster ID as career | Cluster ≠ career label |
 | Picking K only because it “sounds nice” | Use elbow + silhouette + interpretation |
 
+### Inertia (within-cluster sum of squares)
+
+**Inertia** measures how “tight” clusters are: for each point, square its distance to its cluster centroid, then add up over all points.
+
+| K | Typical inertia |
+|---|-----------------|
+| Larger K | Usually **lower** inertia (more centroids → points closer to some center) |
+| K = number of rows | Inertia → 0 (one centroid per point — useless) |
+
+The **elbow plot** is inertia vs K. You want the point where inertia still drops but **much more slowly** — extra clusters are not buying much structure.
+
+### Silhouette score (how to read it)
+
+For one student:
+
+- **a** = average distance to other students in **same** cluster (cohesion)
+- **b** = average distance to students in the **nearest other** cluster (separation)
+- Silhouette ≈ \((b - a) / \max(a, b)\)
+
+| Score | Rough meaning |
+|-------|----------------|
+| Near **+1** | Well inside its cluster, far from neighbors |
+| Near **0** | On the border between clusters |
+| Negative | Possibly assigned to the wrong cluster |
+
+Compare silhouette **across K**, not against a fixed “pass mark.”
+
+### Euclidean distance (why scaling matters)
+
+In 2D, distance between \((x_1, y_1)\) and \((x_2, y_2)\):
+
+\[
+\sqrt{(x_1-x_2)^2 + (y_1-y_2)^2}
+\]
+
+With many features, every dimension adds a squared difference. If `CGPA` is ~8 and a skill is ~3, raw distance is **biased** toward CGPA unless you scale (Day 3).
+
+### K-Means limitations (honest notes)
+
+| Limitation | Practical impact |
+|------------|------------------|
+| Assumes **roughly spherical** clusters | Elongated or nested groups may split oddly |
+| Sensitive to **outliers** | Outliers pull centroids |
+| **Random** initialization | Use `random_state` and `n_init>1` (sklearn default) for stability |
+| You must choose **K** | Elbow + silhouette + domain sense |
+
+### PCA plot vs real clustering
+
+**PCA** (2 components) is only for **visualization** on paper/slides. K-Means in the notebook should run on the **full scaled feature matrix** from Day 3. A 2D plot can hide separation that exists in higher dimensions.
+
+### Workflow with Day 3 artifacts
+
+```text
+Day 3: fit preprocessor on TRAIN → save pipeline
+Day 4: transform ALL profiles with that same pipeline → K-Means on scaled X
+```
+
+Using the **same** scaler as supervised work keeps cluster analysis comparable to later models.
+
+### Optional: clusters as extra features
+
+Later you may add `cluster_id` as one more column in **X** for a classifier. Treat that as an experiment: does it help test accuracy, or just add noise?
+
 ---
 
 ## Goal
