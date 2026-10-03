@@ -15,6 +15,7 @@ import joblib
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
+from sklearn.base import ClassifierMixin
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import (
     accuracy_score,
@@ -47,14 +48,17 @@ def fit_baseline(
 
 
 def evaluate_multiclass(
-    model: LogisticRegression,
+    model: ClassifierMixin,
     X_test: np.ndarray,
     y_test: np.ndarray,
     class_names: list[str],
 ) -> dict[str, Any]:
     """Test-set metrics only — use for honest reporting."""
     y_pred = model.predict(X_test)
-    y_proba = model.predict_proba(X_test)
+    try:
+        y_proba = model.predict_proba(X_test)
+    except AttributeError:
+        y_proba = None
     return {
         "accuracy": float(accuracy_score(y_test, y_pred)),
         "f1_macro": float(f1_score(y_test, y_pred, average="macro", zero_division=0)),
