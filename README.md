@@ -32,6 +32,8 @@ For each day: read `notebooks/dayXX/CONCEPTS.md`, then run that folder’s `.ipy
 
 See [notebooks/README.md](./notebooks/README.md) for the full day index.
 
+**Run the full pipeline (Days 7+):** [EXECUTION.md](./EXECUTION.md)
+
 ## Datasets
 
 - `dataset/AI_Career_Guidance_Dataset.csv` — training/experiment data  
