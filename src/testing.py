@@ -23,12 +23,14 @@ class TestResult:
 
 
 def _tc01_pipeline_artifacts(project_root: Path) -> TestResult:
+    """TC01: Day 3 preprocessor was saved."""
     path = project_root / "outputs" / "processed" / "preprocessing_pipeline.joblib"
     ok = path.is_file()
     return TestResult("TC01", "Preprocessing pipeline exists", ok, str(path))
 
 
 def _tc02_production_model(project_root: Path) -> TestResult:
+    """TC02: production or Day 7 classifier loads."""
     try:
         load_production_classifier(project_root)
         return TestResult("TC02", "Production classifier loads", True, "ok")
@@ -37,6 +39,7 @@ def _tc02_production_model(project_root: Path) -> TestResult:
 
 
 def _tc03_transform_shape(project_root: Path) -> TestResult:
+    """TC03: one profile transforms to the same width as training features."""
     bundle = prepare_train_test_bundle(load_cleaned_table(project_root))
     profile = {"Age": 22, "CGPA": 7.5, "Interest_Area": "Technology"}
     X = transform_profile(profile, project_root)
@@ -50,12 +53,14 @@ def _tc03_transform_shape(project_root: Path) -> TestResult:
 
 
 def _tc04_prediction_non_empty(project_root: Path) -> TestResult:
+    """TC04: ranking is non-empty."""
     result = predict_profile({"Interest_Area": "Business", "CGPA": 8.0}, project_root)
     ok = len(result["ranking"]) >= 1
     return TestResult("TC04", "predict_profile returns ranking", ok, result["top_career"])
 
 
 def _tc05_ranking_probabilities_sum(project_root: Path) -> TestResult:
+    """TC05: ranked probabilities are in (0, 1]."""
     result = predict_profile({"Interest_Area": "Security"}, project_root, top_n=5)
     top = result["ranking"]
     ok = (top["probability"] > 0).all() and (top["probability"] <= 1).all()
@@ -63,6 +68,7 @@ def _tc05_ranking_probabilities_sum(project_root: Path) -> TestResult:
 
 
 def _tc06_skill_gap_columns(project_root: Path) -> TestResult:
+    """TC06: skill-gap table has a gap column."""
     result = predict_profile({"Python": 5, "Projects": 3}, project_root)
     gaps = result["skill_gaps"]
     ok = "gap" in gaps.columns and len(gaps) > 0
@@ -70,12 +76,14 @@ def _tc06_skill_gap_columns(project_root: Path) -> TestResult:
 
 
 def _tc07_day07_metrics(project_root: Path) -> TestResult:
+    """TC07: Day 7 benchmark CSV exists."""
     path = project_root / "outputs" / "metrics" / "day07_model_benchmark.csv"
     ok = path.is_file()
     return TestResult("TC07", "Day 7 benchmark CSV exists", ok, str(path))
 
 
 def _tc08_day08_ann_or_skip(project_root: Path) -> TestResult:
+    """TC08: Day 8 Keras file exists."""
     path = project_root / "models" / "day08_ann.keras"
     ok = path.is_file()
     return TestResult(
@@ -87,12 +95,14 @@ def _tc08_day08_ann_or_skip(project_root: Path) -> TestResult:
 
 
 def _tc09_comparison_table(project_root: Path) -> TestResult:
+    """TC09: Day 9 comparison CSV exists."""
     path = project_root / "outputs" / "metrics" / "day09_final_model_comparison.csv"
     ok = path.is_file()
     return TestResult("TC09", "Day 9 comparison CSV exists", ok, str(path))
 
 
 def _tc10_tableau_exports(project_root: Path) -> TestResult:
+    """TC10: Tableau sample export exists."""
     path = project_root / "outputs" / "tableau" / "student_profiles_sample.csv"
     ok = path.is_file()
     return TestResult("TC10", "Tableau sample export exists", ok, str(path))
@@ -113,11 +123,13 @@ TEST_CASES: list[Callable[[Path], TestResult]] = [
 
 
 def run_all_tests(project_root: Path) -> pd.DataFrame:
+    """Execute TC01–TC10 and return a pass/fail table."""
     rows = [tc(project_root).__dict__ for tc in TEST_CASES]
     return pd.DataFrame(rows)
 
 
 def save_test_report(project_root: Path) -> Path:
+    """Persist the test table to `outputs/metrics/day14_test_report.csv`."""
     report = run_all_tests(project_root)
     out = project_root / "outputs" / "metrics" / "day14_test_report.csv"
     out.parent.mkdir(parents=True, exist_ok=True)

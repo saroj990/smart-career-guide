@@ -67,6 +67,17 @@ if st.button("Get career guidance", type="primary"):
     st.subheader("Top career match")
     st.success(f"{result['top_career']} (model: {result['model_name']})")
 
+    st.subheader("Why this career (this profile)")
+    why = result.get("why_this_career")
+    if why is None or why.empty:
+        st.caption("Local feature contributions are unavailable for this model type.")
+    else:
+        st.caption(
+            "Top scaled features that raised or lowered the model's score for this career. "
+            "Not a guarantee of job success."
+        )
+        st.dataframe(why, use_container_width=True, hide_index=True)
+
     st.subheader("Ranked alternatives")
     st.dataframe(result["ranking"], use_container_width=True)
 

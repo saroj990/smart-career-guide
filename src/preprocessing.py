@@ -20,9 +20,9 @@ from sklearn.preprocessing import LabelEncoder, OneHotEncoder, StandardScaler
 
 from src.cleaning import EXP_COLS, RATING_COLS, clean_career_dataset
 
-TARGET_COL = "Career"
-ID_COL = "Student_ID"
-CATEGORICAL_COLS = ["Interest_Area"]
+TARGET_COL = "Career"  # multi-class label
+ID_COL = "Student_ID"  # dropped from features; kept on raw tables
+CATEGORICAL_COLS = ["Interest_Area"]  # one-hot encoded after the train split
 
 TECH_RATING_COLS = [
     "Python",

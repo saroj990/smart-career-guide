@@ -42,6 +42,7 @@ def fit_baseline(
     y_train: np.ndarray,
     **kwargs: Any,
 ) -> LogisticRegression:
+    """Fit the Day 5 logistic baseline on scaled training features."""
     model = build_baseline_classifier(**kwargs)
     model.fit(X_train, y_train)
     return model

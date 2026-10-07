@@ -34,11 +34,13 @@ DEFAULT_RF_KWARGS: dict[str, Any] = {
 
 
 def build_decision_tree(**kwargs: Any) -> DecisionTreeClassifier:
+    """Single decision tree with project defaults (max_depth=12)."""
     params = {**DEFAULT_TREE_KWARGS, **kwargs}
     return DecisionTreeClassifier(**params)
 
 
 def build_random_forest(**kwargs: Any) -> RandomForestClassifier:
+    """Random forest with project defaults (200 trees)."""
     params = {**DEFAULT_RF_KWARGS, **kwargs}
     return RandomForestClassifier(**params)
 
@@ -70,6 +72,7 @@ def plot_feature_importance(
     importance_df: pd.DataFrame,
     title: str = "Random Forest — top feature importances",
 ) -> plt.Figure:
+    """Horizontal bar chart of Gini importances (global, not per student)."""
     fig, ax = plt.subplots(figsize=(10, 6))
     ax.barh(importance_df["feature"][::-1], importance_df["importance"][::-1], color="steelblue")
     ax.set_xlabel("Importance")
@@ -94,6 +97,7 @@ def evaluate_named_models(
 def comparison_rows(
     evals: dict[str, dict[str, Any]],
 ) -> list[dict[str, float | str]]:
+    """Flatten evaluate_multiclass dicts into table rows."""
     rows: list[dict[str, float | str]] = []
     for name, metrics in evals.items():
         rows.append(
@@ -115,6 +119,7 @@ def save_day06_artifacts(
     class_names: list[str],
     project_root: Path,
 ) -> dict[str, Path]:
+    """Write Day 6 CSVs, plots, and the fitted forest under models/."""
     metrics_dir = project_root / "outputs" / "metrics"
     figures_dir = project_root / "outputs" / "figures"
     models_dir = project_root / "models"

@@ -145,6 +145,7 @@ def save_day07_artifacts(
     project_root: Path,
     best_name: str | None = None,
 ) -> dict[str, Path]:
+    """Save benchmark CSV/JSON plus the winning sklearn model as joblib."""
     metrics_dir = project_root / "outputs" / "metrics"
     models_dir = project_root / "models"
     metrics_dir.mkdir(parents=True, exist_ok=True)

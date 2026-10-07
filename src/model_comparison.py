@@ -21,6 +21,7 @@ ModelKind = Literal["sklearn", "keras"]
 
 
 def _load_day07_benchmark(project_root: Path) -> pd.DataFrame:
+    """Read Day 7 comparison CSV (must exist before Day 9)."""
     path = project_root / "outputs" / "metrics" / "day07_model_benchmark.csv"
     if not path.is_file():
         raise FileNotFoundError(f"Missing {path}. Run Day 7 first.")

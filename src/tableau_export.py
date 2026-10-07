@@ -16,6 +16,7 @@ from src.inference import load_production_classifier
 
 
 def export_tableau_tables(project_root: Path, sample_size: int = 200) -> dict[str, Path]:
+    """Write sample profiles, rankings, and metrics CSVs for Tableau."""
     out_dir = project_root / "outputs" / "tableau"
     out_dir.mkdir(parents=True, exist_ok=True)
 

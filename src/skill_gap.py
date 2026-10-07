@@ -42,15 +42,18 @@ DEFAULT_TARGET_CGPA = 7.5
 
 
 def load_skill_mapping(project_root: Path) -> pd.DataFrame:
+    """Read Career → required skill rows from `dataset/Career_Skill_Mapping.csv`."""
     path = project_root / "dataset" / "Career_Skill_Mapping.csv"
     return pd.read_csv(path)
 
 
 def required_skills_for_career(mapping: pd.DataFrame, career: str) -> list[str]:
+    """Required skill labels for one career name (must match mapping CSV)."""
     return mapping.loc[mapping["Career"] == career, "Required_Skill"].tolist()
 
 
 def _target_for_column(col: str) -> float:
+    """Expected level used as the gap target (rule-based, not learned)."""
     if col in RATING_COLS:
         return DEFAULT_TARGET_RATING
     if col == "Projects":
@@ -63,6 +66,7 @@ def _target_for_column(col: str) -> float:
 
 
 def _current_value(student_row: pd.Series, col: str) -> float:
+    """Student's current value for a mapped column (rating, projects, CGPA, …)."""
     return float(student_row[col])
 
 
@@ -109,6 +113,7 @@ def compute_skill_gaps(
 
 
 def summarize_gaps(gap_df: pd.DataFrame) -> str:
+    """Plain-language list of skills below target (checklist, not ML)."""
     needs = gap_df[gap_df["status"] == "needs_improvement"]
     if needs.empty:
         return "No skill gaps above the target thresholds for this career."

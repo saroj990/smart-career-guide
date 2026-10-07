@@ -14,6 +14,7 @@ from sklearn.base import ClassifierMixin
 
 
 def _predict_proba(model: Any, X: np.ndarray) -> np.ndarray:
+    """Class probabilities: sklearn `predict_proba`, else Keras `predict` (softmax)."""
     if hasattr(model, "predict_proba"):
         return model.predict_proba(X)
     probs = model.predict(X, verbose=0)

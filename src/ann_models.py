@@ -99,11 +99,13 @@ def evaluate_ann(
     y_test: np.ndarray,
     class_names: list[str],
 ) -> dict[str, Any]:
+    """Test-set accuracy / F1 using the same metrics helper as sklearn models."""
     wrapper = _sklearn_like_wrapper(model)
     return evaluate_multiclass(wrapper, X_test, y_test, class_names)
 
 
 def plot_training_history(history: Any, title: str = "ANN training history") -> plt.Figure:
+    """Train vs validation loss and accuracy (overfitting check)."""
     fig, axes = plt.subplots(1, 2, figsize=(11, 4))
     h = history.history
     axes[0].plot(h["loss"], label="train")
@@ -126,6 +128,7 @@ def save_day08_artifacts(
     class_names: list[str],
     project_root: Path,
 ) -> dict[str, Path]:
+    """Persist Keras model, metrics JSON, and training-curve figure."""
     figures_dir = project_root / "outputs" / "figures"
     metrics_dir = project_root / "outputs" / "metrics"
     models_dir = project_root / "models"
@@ -164,6 +167,7 @@ def save_day08_artifacts(
 
 
 def load_day08_ann(project_root: Path) -> Any:
+    """Load `models/day08_ann.keras` after Day 8 training."""
     from tensorflow import keras
 
     path = project_root / "models" / "day08_ann.keras"
@@ -173,6 +177,7 @@ def load_day08_ann(project_root: Path) -> Any:
 
 
 def ann_metrics_only(model: Any, X_test: np.ndarray, y_test: np.ndarray) -> dict[str, float]:
+    """Compact accuracy + macro F1 for comparison tables."""
     wrapper = _sklearn_like_wrapper(model)
     y_pred = wrapper.predict(X_test)
     return {
