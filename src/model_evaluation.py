@@ -46,7 +46,7 @@ def _default_model_factories() -> dict[str, ClassifierFactory]:
             objective="multi:softprob",
             eval_metric="mlogloss",
             random_state=42,
-            n_jobs=-1,
+            n_jobs=1,
         )
     except ImportError:
         pass
@@ -71,7 +71,7 @@ def cross_val_scores(
         y,
         cv=cv,
         scoring=scoring,
-        n_jobs=-1,
+        n_jobs=1,
     )
     return {
         "cv_accuracy_mean": float(scores["test_accuracy"].mean()),
@@ -117,6 +117,20 @@ def benchmark_classifiers(
 
     df = pd.DataFrame(rows).sort_values("test_f1_macro", ascending=False).reset_index(drop=True)
     return df, fitted, test_evals
+
+
+def fit_named_classifier(
+    name: str,
+    X_train: np.ndarray,
+    y_train: np.ndarray,
+) -> ClassifierMixin:
+    """Train a single Day 7 benchmark model by registry name."""
+    factories = _default_model_factories()
+    if name not in factories:
+        raise KeyError(f"Unknown model {name}. Options: {list(factories)}")
+    model = factories[name]()
+    model.fit(X_train, y_train)
+    return model
 
 
 def pick_best_model_name(comparison: pd.DataFrame) -> str:
